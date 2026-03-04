@@ -4,22 +4,9 @@ A custom watch face for the [Watchy](https://watchy.sqfmi.com/) open-source e-pa
 
 ## Preview
 
-```
-╔════════════════════════╗
-║ {                      ║
-║   "time":              ║
-║ ┌──────────────────┐   ║
-║ │     13:45        │   ║  ← white on black
-║ └──────────────────┘   ║
-║   "day":  "Mon",       ║
-║   "date": "2026-03-04",║
-║   "bat":  87% [######..],
-║   "steps": 4231        ║
-║ }                      ║
-║ ────────────────────── ║
-║ // JsonWatch v2.0      ║
-╚════════════════════════╝
-```
+![JsonWatch on device](img/watch.jpg)
+
+![JsonWatch preview](img/preview.svg)
 
 ## Hardware
 
