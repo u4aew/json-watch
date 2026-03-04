@@ -9,52 +9,62 @@ public:
     display.fillScreen(GxEPD_WHITE);
     display.setTextColor(GxEPD_BLACK);
 
-    display.drawRect(3, 3, 194, 194, GxEPD_BLACK);
-    display.drawRect(4, 4, 192, 192, GxEPD_BLACK);
-
+    char buf[48];
     int h = currentTime.Hour;
     int m = currentTime.Minute;
-    char buf[40];
-
-    display.setTextSize(1);
-    display.setCursor(12, 14);
-    display.print("{");
-
-    display.setCursor(20, 32);
-    display.print("\"time\":");
-
-    display.setTextSize(3);
-    sprintf(buf, "%02d:%02d", h, m);
-    display.setCursor(20, 46);
-    display.print(buf);
-
-
-    display.drawLine(12, 90, 188, 90, GxEPD_BLACK);
-
-    display.setTextSize(1);
-
     const char* days[] = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
 
-    display.setCursor(20, 100);
+    float v = getBatteryVoltage();
+    int pct = constrain((int)((v - 3.5f) / 0.7f * 100), 0, 100);
+
+    // double border
+    display.drawRect(2, 2, 196, 196, GxEPD_BLACK);
+    display.drawRect(4, 4, 192, 192, GxEPD_BLACK);
+
+    display.setTextSize(1);
+    display.setCursor(12, 12);
+    display.print("{");
+
+    display.setCursor(22, 24);
+    display.print("\"time\":");
+
+    // inverted block for time
+    display.fillRect(10, 34, 180, 40, GxEPD_BLACK);
+    display.setTextColor(GxEPD_WHITE);
+    display.setTextSize(3);
+    sprintf(buf, "%02d:%02d", h, m);
+    display.setCursor(55, 42);
+    display.print(buf);
+    display.setTextColor(GxEPD_BLACK);
+    display.setTextSize(1);
+
+    display.setCursor(22, 82);
     sprintf(buf, "\"day\":  \"%s\",", days[currentTime.Wday]);
     display.print(buf);
 
-    display.setCursor(20, 116);
-    sprintf(buf, "\"date\": \"%02d.%02d.%d\",", currentTime.Day, currentTime.Month, currentTime.Year + 1970);
+    display.setCursor(22, 94);
+    sprintf(buf, "\"date\": \"%04d-%02d-%02d\",", currentTime.Year + 1970, currentTime.Month, currentTime.Day);
     display.print(buf);
 
-    display.setCursor(20, 132);
-    float v = getBatteryVoltage();
-    int pct = (int)((v - 3.5) / (4.2 - 3.5) * 100);
-    if (pct > 100) pct = 100;
-    if (pct < 0) pct = 0;
-    sprintf(buf, "\"bat\":  \"%d%% (%.2fv)\"", pct, v);
+    char bar[11];
+    int filled = pct / 10;
+    for (int i = 0; i < 10; i++) bar[i] = (i < filled) ? '#' : '.';
+    bar[10] = '\0';
+    display.setCursor(22, 106);
+    sprintf(buf, "\"bat\":  %d%% [%s],", pct, bar);
     display.print(buf);
 
-    display.setCursor(12, 155);
+    uint32_t steps = sensor.getCounter();
+    display.setCursor(22, 118);
+    sprintf(buf, "\"steps\": %lu", (unsigned long)steps);
+    display.print(buf);
+
+    display.setCursor(12, 136);
     display.print("}");
 
-    display.setCursor(12, 178);
-    display.print("// watchy v2.0");
+    display.drawLine(12, 158, 188, 158, GxEPD_BLACK);
+
+    display.setCursor(12, 166);
+    display.print("// JsonWatch v2.0");
   }
 };
